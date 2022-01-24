@@ -33,4 +33,7 @@ public class Article {
     private String nameAuthor;
     private Timestamp dataSaveDocument;
 
+    public Article(Long id) {
+        this.id = id;
+    }
 }

@@ -15,11 +15,5 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     List<Article> findArticleById(Long id);
 
     //endpoint zwracający listę wszystkich artykułów prasowych po słowie kluczowym zawartym w tytule lub treści publikacji
-
-    //endpoint pozwalający na zapis artykułu prasowego
-
-    //endpoint do aktualizacji istniejącego artykułu prasowego
-
-    //endpoint do usuwania wybranego artykułu prasowego
-
+    List<Article> findArticleByDescribe(String title);
 }
