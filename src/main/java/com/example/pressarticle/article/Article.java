@@ -1,6 +1,9 @@
 package com.example.pressarticle.article;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,10 +13,14 @@ import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
+
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Data
 @Table(name = "article")
-//@NamedQuery(name = "Hobbit.findUsingNameQuery", query = "select h from Hobbit h where h.firstName = :firstName and h.lastName = :lastName" )
+//@NamedQuery(name = "Article.findUsingNameQuery", query = "select a from Article a where a.firstName = :firstName and a.lastName = :lastName" )
 public class Article {
 
     @Id
