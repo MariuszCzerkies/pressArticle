@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
-
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor

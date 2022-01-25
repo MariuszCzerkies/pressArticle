@@ -7,11 +7,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -33,7 +37,7 @@ class ArticleControllerTest {
 
     @Test
     @DisplayName("GET /articleAll -> HTTP 200, lista artykułów z bazy")
-    void findAllArticle() throws Exception {
+    void shouldFindAllArticle() throws Exception {
         //given
         final var resoultActions = mockMvc
                 .perform(MockMvcRequestBuilders.get("/articleAll"))
@@ -49,23 +53,37 @@ class ArticleControllerTest {
     }
 
     @Test
-    void sortAll() throws Exception {
+    void shouldSortAllArticle() throws Exception {
         //given
-        final var resoultActions = mockMvc
-                .perform(MockMvcRequestBuilders.get("/sort"))
-                .andDo(print())
-                .andExpect(status().isOk());
+        List<Article> articleList = List.of (
+                new Article(1L, "NewWorld", LocalDate.of(1022,9,17), "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)),
+                new Article(2L, "Machines", LocalDate.of(2015,10,11), "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)),
+                new Article(3L, "Robots", LocalDate.of(2014,8,21), "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)),
+                new Article(4L, "Electrical", LocalDate.of(2012,7,8), "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)),
+                new Article(5L, "NewWorld", LocalDate.of(2010,9,17), "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)),
+                new Article(6L, "NewWorld", LocalDate.of(2011,9,17), "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)));
 
         //when
-        //ResponseEntity<Article> response = callGetUser(user.getEmail(), token);
-        List<Article> sortArticle = articleRepository.findArticleByQuery();
+        List<Article> exampleSortArticle = articleList.stream()
+                .sorted(Comparator.comparing(Article::getDataPublication).reversed())
+                .collect(Collectors.toList());
+        List<Long> integerModelListId = new ArrayList<>();
+            for (Article article : exampleSortArticle) {
+                integerModelListId.add(article.getId());
+                System.out.println(integerModelListId);
+            }
+
+        List<Long> compareListId = new ArrayList<>();
+            for (int i = 0; i < exampleSortArticle.size(); i++) {
+               compareListId.add(articleRepository.findArticleByQuery().get(i).getId());
+            }
 
         //then
-       // assertEquals(, sortArticle);
+        assertEquals(integerModelListId, compareListId);
     }
 
     @Test
-    void article() throws Exception {
+    void shouldFindArticleById() throws Exception {
         //given
         final var resoultActions = mockMvc
                 .perform(MockMvcRequestBuilders.get("/article/1"))
@@ -80,18 +98,29 @@ class ArticleControllerTest {
     }
 
     @Test
-    void articleTitle() {
+    void shouldGetAllArticlesTitle() throws Exception {
+        //given
+        final var resoultActions = mockMvc
+                .perform(MockMvcRequestBuilders.get("/articleTitle/NewWorld"))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        //when
+        List<Article> describeArticle = articleRepository.findArticleByDescribe("NewWorld");
+
+        //then
+        assertEquals(3, describeArticle.size());
     }
 
     @Test
-    void addArticle() {
+    void shouldAddArticle() {
     }
 
     @Test
-    void updateArticle() {
+    void shouldUpdateArticle() {
     }
 
     @Test
-    void deleteArticle() {
+    void shouldDeleteArticle() {
     }
 }
