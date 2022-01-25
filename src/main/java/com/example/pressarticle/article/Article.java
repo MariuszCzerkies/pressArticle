@@ -19,9 +19,7 @@ import java.time.LocalDate;
 @Entity
 @Data
 @Table(name = "article")
-//@NamedQuery(name = "Article.findUsingNameQuery", query = "select a from Article a where a.firstName = :firstName and a.lastName = :lastName" )
 public class Article {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

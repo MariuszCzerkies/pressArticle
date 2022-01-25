@@ -18,33 +18,32 @@ public class ArticleService {
         this.articleRepository = articleRepository;
     }
 
-    List<Article> findAllArticleTransfer() {
+    public List<Article> findAllArticleTransfer() {
         return articleRepository.findAll();
     }
 
-    List<Article> sortAllTransfer() {
+    public List<Article> sortAllTransfer() {
         return articleRepository.findArticleByQuery();
     }
 
-    List<Article> articleTransfer(@PathVariable Long id) {
+    public List<Article> articleTransfer(@PathVariable Long id) {
         return articleRepository.findArticleById(id);
     }
 
-    List<Article> articleTitleTransfer(@PathVariable String title) {
+    public List<Article> articleTitleTransfer(@PathVariable String title) {
         return articleRepository.findArticleByDescribe(title);
     }
 
-    void addArticleTransfer() {
-        Article article = new Article(7L, "Programing Language", LocalDate.now(), "ProgramingFuture", "Paul Martin", new Timestamp(date.getTime()));
-        articleRepository.save(article);
+    public Article addArticleTransfer(Article article) {
+       return articleRepository.save(article);
     }
 
-    void updateArticleTransfer(@PathVariable Long id) {
-        Article article = new Article(id, "Update", LocalDate.now(), "NewUpdate", "New Author", new Timestamp(date.getTime()));
-        articleRepository.save(article);
+    public Article updateArticleTransfer(@PathVariable Long id) {
+       Article article = new Article(id, "Update", LocalDate.now(), "NewUpdate", "New Author", new Timestamp(date.getTime()));
+       return articleRepository.save(article);
     }
 
-    void deleteArticleTransfer(@PathVariable Long id) {
+    public void deleteArticleTransfer(@PathVariable Long id) {
         Article article = new Article(id);
         articleRepository.delete(article);
     }

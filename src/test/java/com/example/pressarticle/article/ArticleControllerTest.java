@@ -113,14 +113,48 @@ class ArticleControllerTest {
     }
 
     @Test
-    void shouldAddArticle() {
+    void shouldAddArticle() throws Exception {
+        //give
+        final var resoultActions = mockMvc
+                .perform(MockMvcRequestBuilders.get("/articleAdd"))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        //when
+        List<Article> addArticle = articleRepository.findAll();
+
+        //then
+        assertEquals(7, addArticle.size());
+   }
+
+    @Test
+    void shouldUpdateArticle() throws Exception {
+        //give
+        final var resoultActions = mockMvc
+                .perform(MockMvcRequestBuilders.get("/articleUpdate/1"))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        //when
+        List<Article> updateArticle = articleRepository.findArticleById(1L);
+
+        //then
+        assertEquals("Update", updateArticle.get(0).getDescribe());
+        assertEquals("NewUpdate", updateArticle.get(0).getNameMagazine());
     }
 
     @Test
-    void shouldUpdateArticle() {
-    }
+    void shouldDeleteArticle() throws Exception {
+        //give
+        final var resoultActions = mockMvc
+                .perform(MockMvcRequestBuilders.get("/articleDelete/1"))
+                .andDo(print())
+                .andExpect(status().isOk());
 
-    @Test
-    void shouldDeleteArticle() {
+        //when
+        List<Article> existArticle = articleRepository.findAll();
+
+        //then
+        assertEquals(5, existArticle.size());
     }
 }
