@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class ArticleServiceTest {
@@ -28,14 +29,15 @@ class ArticleServiceTest {
     @DisplayName("Should return all Articles")
     @Test
     void findAllArticleTransfer() {
-        //give
+        //given
         List<Article> list = new ArrayList<>();
         list.add(new Article(1L, "NewWorld", LocalDate.of(1022,9,17),
                         "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)));
         list.add(new Article(2L, "NewWorld", LocalDate.of(1022,9,17),
                 "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)));
 
-        Mockito.when(articleRepository.findAll()).thenReturn(list);
+        //Mockito.when(articleRepository.findAll()).thenReturn(list);
+         given(articleRepository.findAll()).willReturn(list);//jezeli ktosc zawola metode findAll na articlerepository to ma zwrócic list
 
         //when
         List<Article> result = articleService.findAllArticleTransfer();
@@ -135,19 +137,14 @@ class ArticleServiceTest {
     @Test
     void deleteArticleTransfer() {
         //given
-        List<Article> list = new ArrayList<>();
-        list.add(new Article(1L, "NewWorld", LocalDate.of(2022,9,17),
-                "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)));
-        list.add(new Article(2L, "NewWorld", LocalDate.of(1022,9,17),
-                "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)));
-
-        Mockito.when(articleRepository.delete(list.get(0).getId())).thenReturn(list);
+        var SOME_ID = 1L;
+        var BAD_ID = 2L;
 
         //when
-            articleService.deleteArticleTransfer(1L);
+        articleService.deleteArticleTransfer(SOME_ID);
 
         //then
-        assertEquals(1, list.size());
+        Mockito.verify(articleRepository).deleteById(SOME_ID);
 
     }
 }

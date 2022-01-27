@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +20,9 @@ public class ArticleService {
     }
 
     public List<Article> findAllArticleTransfer() {
+      //  var result = articleRepository.findAll();
+        //var filtered = Collections.singletonList(result.get(0));
+       // return filtered;
         return articleRepository.findAll();
     }
 
@@ -44,7 +48,7 @@ public class ArticleService {
     }
 
     public void deleteArticleTransfer(@PathVariable Long id) {
-        Article article = new Article(id);
-        articleRepository.delete(article);
+        //Article article = new Article(id);
+        articleRepository.deleteById(id);
     }
 }
