@@ -7,6 +7,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -26,87 +29,90 @@ class ArticleServiceTest {
     @InjectMocks
     ArticleService articleService;
 
-    @DisplayName("Should return all Articles")
-    @Test
-    void findAllArticleTransfer() {
-        //given
-        List<Article> list = new ArrayList<>();
-        list.add(new Article(1L, "NewWorld", LocalDate.of(1022,9,17),
-                        "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)));
-        list.add(new Article(2L, "NewWorld", LocalDate.of(1022,9,17),
-                "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)));
-
-        //Mockito.when(articleRepository.findAll()).thenReturn(list);
-         given(articleRepository.findAll()).willReturn(list);//jezeli ktosc zawola metode findAll na articlerepository to ma zwrócic list
-
-        //when
-        List<Article> result = articleService.findAllArticleTransfer();
-
-        //then
-        assertEquals(list.size(), result.size());
-    }
+//    @DisplayName("Should return all Articles")
+//    @Test
+//    void findAllArticleTransfer() {
+//        //given
+//        List<Article> list = new ArrayList<>();
+//        list.add(new Article(1L, "NewWorld", LocalDate.of(1022,9,17),
+//                        "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)));
+//        list.add(new Article(2L, "NewWorld", LocalDate.of(1022,9,17),
+//                "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)));
+//
+//        //Mockito.when(articleRepository.findAll()).thenReturn(list);
+//         given(articleRepository.findAll()).willReturn(list);//jezeli ktosc zawola metode findAll na articlerepository to ma zwrócic list
+//
+//        //when
+//        List<Article> result = articleService.sortAllArticleTransfer();
+//
+//        //then
+//        assertEquals(list.size(), result.size());
+//    }
 
     @DisplayName("Should return sort Articles")
     @Test
     void sortAllTransfer() {
         //given
         List<Article> list = new ArrayList<>();
-        list.add(new Article(1L, "NewWorld", LocalDate.of(2022,9,17),
+        list.add(new Article(1L, "Machines replace human","Machines", LocalDate.of(2022,9,17),
                 "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)));
-        list.add(new Article(2L, "NewWorld", LocalDate.of(1022,9,17),
+        list.add(new Article(2L, "Robots are a system computer","Robots", LocalDate.of(1022,8,11),
                 "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)));
-
-       // list = list.stream()
-                //   .sorted(Comparator.comparing(Article::getDataPublication).reversed())
-                  // .collect(Collectors.toList());
 
         list.sort(Comparator.comparing(Article::getDataPublication).reversed());
 
-        Mockito.when(articleRepository.findArticleByQuery()).thenReturn(list);
+
+        //Mockito.when(articleRepository.findArticleByQuery()).thenReturn(list);
+        Mockito.when(articleRepository.findAll(Mockito.any())).thenReturn(list);
 
         //when
-        List<Article> articleList =  articleService.sortAllTransfer();
+        Page<Article> articleList =  articleService.sortAllArticleTransfer(0, 20);
+
+        articleList.forEach(System.out::println);
 
         //then
-        assertEquals(list.get(0), articleList.get(0));
+        assertEquals(list.get(0), articleList.get());
     }
     @DisplayName("Should return Articles for id")
     @Test
-    void articleTransfer() {
+    void articleIdTransfer() {
         //given
         List<Article> article = new ArrayList<>();
-        article.add(new Article(1L, "NewWorld", LocalDate.of(2022,9,17),
+        article.add(new Article(1L, "NewWorld", "NewTitle",LocalDate.of(2022,9,17),
                 "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)));
 
         Mockito.when(articleRepository.findArticleById(Mockito.anyLong())).thenReturn(article);
 
         //when
-        List<Article> result= articleService.articleTransfer(1L);
+        List<Article> result= articleService.articleIdTransfer(1L);
 
         //then
         assertEquals(article.size(), result.size());
     }
 
+    @DisplayName("Should return Articles for text")
     @Test
-    void articleTitleTransfer() {
+    void articleFindDescriptionTransfer() {
         //given
         List<Article> article = new ArrayList<>();
-        article.add(new Article(1L, "NewWorld", LocalDate.of(2022,9,17),
+        article.add(new Article(1L, "NewWorld", "NewDescription", LocalDate.of(2022,9,17),
                 "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)));
 
        // Mockito.when(articleRepository.findArticleByDescribe(Mockito.anyString())).thenReturn(article);
-        Mockito.when(articleRepository.findArticleByDescribe("NewWorld")).thenReturn(article);
+        Mockito.when(articleRepository.findArticleByDescribe("NewWorld", "NenWorld")).thenReturn(article);
 
         //when
-        List<Article> result= articleService.articleTitleTransfer("NewWorld");
+        List<Article> result= articleService.articleDescribeTransfer("NewWorld", "World");
+
         //then
         assertEquals(article.size(), result.size());
     }
 
+    @DisplayName("Should add Article")
     @Test
     void addArticleTransfer() {
         //given
-        Article article = new Article(1L, "NewWorld", LocalDate.of(2022,9,17),
+        Article article = new Article(1L, "NewWorld", "NewTitleWorld",LocalDate.of(2022,9,17),
                 "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0));
 
         Mockito.when(articleRepository.save(article)).thenReturn(article);
@@ -118,10 +124,11 @@ class ArticleServiceTest {
         assertEquals(article.getId(), result.getId());
     }
 
+    @DisplayName("Should update Article")
     @Test
     void updateArticleTransfer() {
         //given
-        Article article = new Article(1L, "updateNewWorld", LocalDate.of(2022,9,17),
+        Article article = new Article(1L, "updateNewWorld","updateText", LocalDate.of(2022,9,17),
                 "updateWorld", "Update Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0));
 
         Mockito.when(articleRepository.save(article)).thenReturn(article);
@@ -130,10 +137,11 @@ class ArticleServiceTest {
         Article result = articleService.addArticleTransfer(article);
 
         //then
-        assertEquals(article.getDescribe(), result.getDescribe());
+        assertEquals(article.getDescribeText(), result.getDescribeText());
         assertEquals(article.getNameMagazine(), result.getNameMagazine());
     }
 
+    @DisplayName("Should delete Article")
     @Test
     void deleteArticleTransfer() {
         //given
@@ -145,6 +153,5 @@ class ArticleServiceTest {
 
         //then
         Mockito.verify(articleRepository).deleteById(SOME_ID);
-
     }
 }
