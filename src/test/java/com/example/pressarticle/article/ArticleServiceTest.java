@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
@@ -61,17 +62,18 @@ class ArticleServiceTest {
 
         list.sort(Comparator.comparing(Article::getDataPublication).reversed());
 
-
-        //Mockito.when(articleRepository.findArticleByQuery()).thenReturn(list);
-        Mockito.when(articleRepository.findAll(Mockito.any())).thenReturn(list);
+        Mockito
+                .when(
+                        articleRepository.findAll(Mockito.any(Pageable.class))
+                )
+                .thenReturn(new PageImpl<>(list));
 
         //when
-        Page<Article> articleList =  articleService.sortAllArticleTransfer(0, 20);
-
-        articleList.forEach(System.out::println);
+        List<Article> articleList =  articleService
+                .sortAllArticleTransfer(0, 20, "data_Publication");
 
         //then
-        assertEquals(list.get(0), articleList.get());
+        assertEquals(list.get(0), articleList.get(0));
     }
     @DisplayName("Should return Articles for id")
     @Test
@@ -98,11 +100,16 @@ class ArticleServiceTest {
         article.add(new Article(1L, "NewWorld", "NewDescription", LocalDate.of(2022,9,17),
                 "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)));
 
-       // Mockito.when(articleRepository.findArticleByDescribe(Mockito.anyString())).thenReturn(article);
-        Mockito.when(articleRepository.findArticleByDescribe("NewWorld", "NenWorld")).thenReturn(article);
+        Mockito
+                .when(
+                        articleRepository.findArticleByDescribe(
+                                Mockito.anyString(), Mockito.anyString()
+                        )
+                )
+                .thenReturn(article);
 
         //when
-        List<Article> result= articleService.articleDescribeTransfer("NewWorld", "World");
+        List<Article> result = articleService.articleDescribeTransfer("NewWorld", "World");
 
         //then
         assertEquals(article.size(), result.size());

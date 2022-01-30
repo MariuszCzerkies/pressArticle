@@ -2,9 +2,7 @@ package com.example.pressarticle.article;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.sql.Timestamp;
-//import java.time.Instant; new Instant.parse
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -46,7 +43,7 @@ class ArticleControllerTest {
     void shouldSortAllArticle() throws Exception {
         //given
         final var resultActions = mockMvc
-                .perform(MockMvcRequestBuilders.get("/article/articles"))
+                .perform(MockMvcRequestBuilders.get("/articles"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -66,14 +63,14 @@ class ArticleControllerTest {
                 .sorted(Comparator.comparing(Article::getDataPublication).reversed())
                 .collect(Collectors.toList());
         List<Long> exampleSortArticleId = new ArrayList<>();
-            for (Article article : articleList) {
-                exampleSortArticleId.add(article.getId());
-            }
+        for (Article article : articleList) {
+            exampleSortArticleId.add(article.getId());
+        }
 
         List<Long> expectedSortId = new ArrayList<>();
-            for (int i = 0; i < articleFromDBAsJava.size(); i++) {
-                expectedSortId.add(articleFromDBAsJava.get(i).getId());
-            }
+        for (int i = 0; i < articleFromDBAsJava.size(); i++) {
+            expectedSortId.add(articleFromDBAsJava.get(i).getId());
+        }
 
         //then
         assertEquals(exampleSortArticleId, expectedSortId);
@@ -83,7 +80,7 @@ class ArticleControllerTest {
     void shouldFindArticleById() throws Exception {
         //given
         final var resultActions = mockMvc
-                .perform(MockMvcRequestBuilders.get("/article/articleId/1"))
+                .perform(MockMvcRequestBuilders.get("/articles/1"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -98,7 +95,7 @@ class ArticleControllerTest {
     void shouldGetAllArticlesDescription() throws Exception {
         //given
         final var resultActions = mockMvc
-                .perform(MockMvcRequestBuilders.get("/article/articleText?text=New World&titleText=World"))
+                .perform(MockMvcRequestBuilders.get("/articles/articleText?text=New World&titleText=World"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -114,59 +111,78 @@ class ArticleControllerTest {
         //give
         Article newArticle = new Article(11L,"Programing Language","Programing", LocalDateTime.now().toLocalDate(), "ProgramingFuture",
                 "Paul Martin", new Timestamp(100, 10, 11, 0, 0, 0, 0));
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-        String requestJson=ow.writeValueAsString(newArticle);
 
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        String requestJson= objectMapper.writeValueAsString(newArticle);
 
+        //when
         final var resultActions = mockMvc
                 .perform(MockMvcRequestBuilders
-                        .post("/article/articleAdd")
-                        //.header("Content-Type", "application/json")
+                        .post("/articles")
                         .contentType("application/json")
-                        .header("Accept", "application/json")
+                        .accept("application/json")
                         .content(requestJson)
                 )
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
 
-        //when
-        List<Article> addArticle = articleRepository.findAll();
 
         //then
+        List<Article> addArticle = articleRepository.findAll();
         assertEquals(7, addArticle.size());
-   }
+    }
 
     @Test
     void shouldUpdateArticle() throws Exception {
-        //give
-        final var resultActions = mockMvc
-                .perform(MockMvcRequestBuilders.put("/article/articleUpdate/1"))
-                .andDo(print())
-                .andExpect(status().isOk());
+        //given
+        // todo zapisać artykuł do późniejszej aktualizacji - użyć - articleRepository.save
+
+        Article newArticle = new Article(11L,"Programing Language","Programing", LocalDateTime.now().toLocalDate(), "ProgramingFuture",
+                "Paul Martin", new Timestamp(100, 10, 11, 0, 0, 0, 0));
+
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        String requestJson= objectMapper.writeValueAsString(newArticle);
+
+       // Article save = articleRepository.save(newArticle);
 
         //when
-        List<Article> updateArticle = articleRepository.findArticleById(1L);
+        final var resultActions = mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .put("/articles/articleUpdate/1")
+                                .contentType("application/json")
+                                .accept("application/json")
+                                .content(requestJson)
+                        //todo dodąć body (content) tak jak przy zapisie
+                )
+                .andDo(print())
+                .andExpect(status().is2xxSuccessful());
+
 
         //then
-        assertEquals("Update", updateArticle.get(0).getDescribeText());
-        assertEquals("NewUpdate", updateArticle.get(0).getNameMagazine());
+        List<Article> updateArticle = articleRepository.findArticleById(1L);
+        assertEquals("Programing Language", updateArticle.get(0).getDescribeText());
+        //assertEquals("NewUpdate", updateArticle.get(0).getNameMagazine());
     }
 
     @Test
     void shouldDeleteArticle() throws Exception {
-        //give
-        final var resultActions = mockMvc
-                .perform(MockMvcRequestBuilders.delete("/article/articleDelete/1"))
-                .andDo(print())
-                .andExpect(status().isOk());
+        //given
+        String articleIdToDelete = "1";
 
         //when
-        List<Article> existArticle = articleRepository.findAll();
+        final var resultActions = mockMvc
+                .perform(MockMvcRequestBuilders
+                        .delete("/articles/" + articleIdToDelete)
+
+                )
+                .andDo(print())
+                .andExpect(status().is(202));
 
         //then
+        List<Article> existArticle = articleRepository.findAll();
         assertEquals(5, existArticle.size());
     }
 }

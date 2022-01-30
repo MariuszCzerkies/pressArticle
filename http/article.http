@@ -1,0 +1,11 @@
+### get sort
+GET http://localhost:8080/articles/articleText?text=New World&titleText=World
+
+###
+GET http://localhost:8080/articles
+
+###
+POST http://localhost:8080/articles
+
+###
+PUT http://localhost:8080/articles/articleUpdate/1
