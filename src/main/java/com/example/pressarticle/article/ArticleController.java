@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -20,14 +19,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("/articles")
 public class ArticleController {
 
-    Date date = new Date();
     private ArticleService articleService;
 
     public ArticleController(ArticleService articleService) {
         this.articleService = articleService;
     }
 
-    //endpoint zwracający wszystkie artykuły prasowe posortowane malejąco po dacie publikacji //paginacja
     @GetMapping()
     public ResponseEntity<List<Article>> sortAllArticle(
             @RequestParam(name = "page", required = false, defaultValue = "0") int pageNumber,
@@ -39,13 +36,11 @@ public class ArticleController {
         );
     }
 
-    //endpoint zwracający pojedynczy artykuł prasowy po id
     @GetMapping("/{id}")
     public List<Article> articleId(@PathVariable Long id) {
         return articleService.articleIdTransfer(id);
     }
 
-    //endpoint zwracający listę wszystkich artykułów prasowych po słowie kluczowym zawartym w tytule lub treści publikacji
     @GetMapping("/articleText")
     public List<Article> articleDescription(
             @RequestParam String text,
@@ -54,7 +49,6 @@ public class ArticleController {
         return articleService.articleDescribeTransfer(text, titleText);
     }
 
-    //endpoint pozwalający na zapis artykułu prasowego
     @PostMapping(
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
@@ -66,9 +60,8 @@ public class ArticleController {
                 .body(article);
     }
 
-    //endpoint do aktualizacji istniejącego artykułu prasowego
     @PutMapping(
-            path = "/articleUpdate/{id}",
+            path = "/{id}",
             produces = APPLICATION_JSON_VALUE,
             consumes = APPLICATION_JSON_VALUE
     )
@@ -79,7 +72,6 @@ public class ArticleController {
         return ResponseEntity.ok(articleService.updateArticleTransfer(id, articleToUpdate));
     }
 
-    //endpoint do usuwania wybranego artykułu prasowego
     @DeleteMapping(
             path = "/{id}",
             produces = APPLICATION_JSON_VALUE

@@ -7,10 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -19,7 +17,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class ArticleServiceTest {
@@ -29,26 +26,6 @@ class ArticleServiceTest {
 
     @InjectMocks
     ArticleService articleService;
-
-//    @DisplayName("Should return all Articles")
-//    @Test
-//    void findAllArticleTransfer() {
-//        //given
-//        List<Article> list = new ArrayList<>();
-//        list.add(new Article(1L, "NewWorld", LocalDate.of(1022,9,17),
-//                        "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)));
-//        list.add(new Article(2L, "NewWorld", LocalDate.of(1022,9,17),
-//                "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)));
-//
-//        //Mockito.when(articleRepository.findAll()).thenReturn(list);
-//         given(articleRepository.findAll()).willReturn(list);//jezeli ktosc zawola metode findAll na articlerepository to ma zwrócic list
-//
-//        //when
-//        List<Article> result = articleService.sortAllArticleTransfer();
-//
-//        //then
-//        assertEquals(list.size(), result.size());
-//    }
 
     @DisplayName("Should return sort Articles")
     @Test
@@ -153,7 +130,6 @@ class ArticleServiceTest {
     void deleteArticleTransfer() {
         //given
         var SOME_ID = 1L;
-        var BAD_ID = 2L;
 
         //when
         articleService.deleteArticleTransfer(SOME_ID);

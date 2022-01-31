@@ -24,22 +24,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//Spring - użyj cały kontekst Spring'a do testów
+
 @SpringBootTest
-//Podpowiedz Spring'owi, skąd wziąć / jak utworzyć MockMvc
-@AutoConfigureMockMvc//do MockMvc
+@AutoConfigureMockMvc
 class ArticleControllerTest {
 
     @Autowired
     private ArticleRepository articleRepository;
+
     @Autowired
-    //API do testowania endpointów (Web MVC)
     private MockMvc mockMvc;
+
     @Autowired
     private ObjectMapper objectMapper;
 
     @Test
-    @DisplayName("GET /articleAll -> HTTP 200, sorted list articles from base")
+    @DisplayName("GET - get Sorted All Articles -> HTTP 200, sorted list articles from base")
     void shouldSortAllArticle() throws Exception {
         //given
         final var resultActions = mockMvc
@@ -77,6 +77,7 @@ class ArticleControllerTest {
     }
 
     @Test
+    @DisplayName("GET - get Article By Id -> HTTP 201")
     void shouldFindArticleById() throws Exception {
         //given
         final var resultActions = mockMvc
@@ -92,6 +93,7 @@ class ArticleControllerTest {
     }
 
     @Test
+    @DisplayName("GET - get All Article By Description Or Title -> HTTP 200")
     void shouldGetAllArticlesDescription() throws Exception {
         //given
         final var resultActions = mockMvc
@@ -107,6 +109,7 @@ class ArticleControllerTest {
     }
 
     @Test
+    @DisplayName("POST - add All Article By Description Or Title -> HTTP 201")
     void shouldAddArticle() throws Exception {
         //give
         Article newArticle = new Article(11L,"Programing Language","Programing", LocalDateTime.now().toLocalDate(), "ProgramingFuture",
@@ -134,18 +137,15 @@ class ArticleControllerTest {
     }
 
     @Test
+    @DisplayName("PUT - update Article -> HTTP 200")
     void shouldUpdateArticle() throws Exception {
         //given
-        // todo zapisać artykuł do późniejszej aktualizacji - użyć - articleRepository.save
-
         Article newArticle = new Article(11L,"Programing Language","Programing", LocalDateTime.now().toLocalDate(), "ProgramingFuture",
                 "Paul Martin", new Timestamp(100, 10, 11, 0, 0, 0, 0));
 
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-        String requestJson= objectMapper.writeValueAsString(newArticle);
-
-       // Article save = articleRepository.save(newArticle);
+        String requestJson = objectMapper.writeValueAsString(newArticle);
 
         //when
         final var resultActions = mockMvc
@@ -155,7 +155,6 @@ class ArticleControllerTest {
                                 .contentType("application/json")
                                 .accept("application/json")
                                 .content(requestJson)
-                        //todo dodąć body (content) tak jak przy zapisie
                 )
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
@@ -164,10 +163,10 @@ class ArticleControllerTest {
         //then
         List<Article> updateArticle = articleRepository.findArticleById(1L);
         assertEquals("Programing Language", updateArticle.get(0).getDescribeText());
-        //assertEquals("NewUpdate", updateArticle.get(0).getNameMagazine());
     }
 
     @Test
+    @DisplayName("DELETE - delete Article -> HTTP 204")
     void shouldDeleteArticle() throws Exception {
         //given
         String articleIdToDelete = "1";

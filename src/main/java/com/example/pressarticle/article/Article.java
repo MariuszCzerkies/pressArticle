@@ -35,9 +35,6 @@ public class Article {
     private String nameAuthor;
     private Timestamp dataSaveDocument;
 
-    //@CreatedDate
-    //private LocalDateTime dataSaveDocument;
-
     public Article(Long id) {
         this.id = id;
     }
