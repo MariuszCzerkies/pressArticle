@@ -151,7 +151,7 @@ class ArticleControllerTest {
         final var resultActions = mockMvc
                 .perform(
                         MockMvcRequestBuilders
-                                .put("/articles/articleUpdate/1")
+                                .put("/articles/1")
                                 .contentType("application/json")
                                 .accept("application/json")
                                 .content(requestJson)
@@ -182,6 +182,6 @@ class ArticleControllerTest {
 
         //then
         List<Article> existArticle = articleRepository.findAll();
-        assertEquals(5, existArticle.size());
+        assertEquals(6, existArticle.size());
     }
 }
