@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 class ArticleControllerTest {
 
     @Autowired
@@ -71,6 +73,7 @@ class ArticleControllerTest {
         for (int i = 0; i < articleFromDBAsJava.size(); i++) {
             expectedSortId.add(articleFromDBAsJava.get(i));
         }
+
         expectedSortId.stream()
                 .sorted(Comparator.comparing(Article::getDataPublication).reversed())
                 .collect(Collectors.toList());
@@ -190,6 +193,6 @@ class ArticleControllerTest {
 
         //then
         List<Article> existArticle = articleRepository.findAll();
-        assertEquals(6, existArticle.size());
+        assertEquals(5, existArticle.size());
     }
 }
