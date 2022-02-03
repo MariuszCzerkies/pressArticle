@@ -67,13 +67,21 @@ class ArticleControllerTest {
             exampleSortArticleId.add(article.getId());
         }
 
-        List<Long> expectedSortId = new ArrayList<>();
+        List<Article> expectedSortId = new ArrayList<>();
         for (int i = 0; i < articleFromDBAsJava.size(); i++) {
-            expectedSortId.add(articleFromDBAsJava.get(i).getId());
+            expectedSortId.add(articleFromDBAsJava.get(i));
+        }
+        expectedSortId.stream()
+                .sorted(Comparator.comparing(Article::getDataPublication).reversed())
+                .collect(Collectors.toList());
+
+        List<Long> expectedSortedListId = new ArrayList<>();
+        for (Article article : expectedSortId) {
+            expectedSortedListId.add(article.getId());
         }
 
         //then
-        assertEquals(exampleSortArticleId, expectedSortId);
+        assertEquals(exampleSortArticleId, expectedSortedListId);
     }
 
     @Test
