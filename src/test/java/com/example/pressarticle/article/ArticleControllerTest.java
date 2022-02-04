@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional//w testach po każdym teście wycofuje zmiany zrobione na bazie ktore odbyly sie w trakcie wykonywania tego testu
+@Transactional
 class ArticleControllerTest {
 
     @Autowired
