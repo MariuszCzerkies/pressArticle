@@ -1,5 +1,6 @@
-package com.example.pressarticle.article;
+package com.example.pressarticle.article.repository;
 
+import com.example.pressarticle.article.model.Article;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

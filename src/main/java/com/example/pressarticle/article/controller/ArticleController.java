@@ -1,5 +1,7 @@
-package com.example.pressarticle.article;
+package com.example.pressarticle.article.controller;
 
+import com.example.pressarticle.article.service.ArticleService;
+import com.example.pressarticle.article.model.Article;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

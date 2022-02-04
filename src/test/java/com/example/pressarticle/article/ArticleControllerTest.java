@@ -1,5 +1,7 @@
 package com.example.pressarticle.article;
 
+import com.example.pressarticle.article.model.Article;
+import com.example.pressarticle.article.repository.ArticleRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -28,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
+@Transactional//w testach po każdym teście wycofuje zmiany zrobione na bazie ktore odbyly sie w trakcie wykonywania tego testu
 class ArticleControllerTest {
 
     @Autowired

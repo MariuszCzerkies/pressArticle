@@ -1,4 +1,4 @@
-package com.example.pressarticle.article;
+package com.example.pressarticle.article.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

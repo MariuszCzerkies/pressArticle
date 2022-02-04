@@ -1,5 +1,7 @@
-package com.example.pressarticle.article;
+package com.example.pressarticle.article.service;
 
+import com.example.pressarticle.article.model.Article;
+import com.example.pressarticle.article.repository.ArticleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
