@@ -1,5 +1,7 @@
 package com.example.pressarticle.article;
 
+import com.example.pressarticle.article.controller.dto.ArticleDto;
+import com.example.pressarticle.article.controller.dto.ArticleResponse;
 import com.example.pressarticle.article.model.Article;
 import com.example.pressarticle.article.repository.ArticleRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -11,16 +13,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,8 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @SpringBootTest
-@AutoConfigureMockMvc
-@Transactional
+@AutoConfigureMockMvc//zezwala na MockMvc
+@Transactional//w testach po każdym teście wycofuje zmiany zrobione na bazie ktore odbyly sie w trakcie wykonywania tego testu
 class ArticleControllerTest {
 
     @Autowired
@@ -55,12 +59,12 @@ class ArticleControllerTest {
         List<Article> articleFromDBAsJava = objectMapper.readValue(articleFormDBInJSON, new TypeReference<>() {});
 
         List<Article> articleList = List.of (
-                new Article(1L, "New World is for you","NewWorld", LocalDate.of(1022,9,17), "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)),
-                new Article(2L, "Machines replace human","Machines", LocalDate.of(2015,10,11), "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)),
-                new Article(3L, "Robots are a system computer","Robots", LocalDate.of(2014,8,21), "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)),
-                new Article(4L, "Electrical 230VAC 24VDC","Electrical", LocalDate.of(2012,7,8), "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)),
-                new Article(5L, "New World is for you","NewWorld", LocalDate.of(2010,9,17), "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)),
-                new Article(6L, "New World is for you","NewWorld", LocalDate.of(2011,9,17), "World", "Allan Balkier", new Timestamp(100, 10, 11, 0, 0, 0, 0)));
+                new Article(1L, "New World is for you","NewWorld", LocalDate.of(1022,9,17), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
+                new Article(2L, "Machines replace human","Machines", LocalDate.of(2015,10,11), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
+                new Article(3L, "Robots are a system computer","Robots", LocalDate.of(2014,8,21), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
+                new Article(4L, "Electrical 230VAC 24VDC","Electrical", LocalDate.of(2012,7,8), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
+                new Article(5L, "New World is for you","NewWorld", LocalDate.of(2010,9,17), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
+                new Article(6L, "New World is for you","NewWorld", LocalDate.of(2011,9,17), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")));
 
         //when
         articleList = articleList.stream()
@@ -99,7 +103,8 @@ class ArticleControllerTest {
                 .andExpect(status().isOk());
 
         //when
-        List<Article> idArticle = articleRepository.findArticleById(1L);
+        //List<Article> idArticle = articleRepository.findById(1L);
+        ResponseEntity<ArticleDto> idArticle = articleRepository.findById(1L);
 
         //then
         assertEquals(1, idArticle.get(0).getId());
@@ -126,7 +131,7 @@ class ArticleControllerTest {
     void shouldAddArticle() throws Exception {
         //give
         Article newArticle = new Article(11L,"Programing Language","Programing", LocalDateTime.now().toLocalDate(), "ProgramingFuture",
-                "Paul Martin", new Timestamp(100, 10, 11, 0, 0, 0, 0));
+                "Paul Martin", Instant.parse("2018-08-22T10:00:00Z"));
 
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
@@ -154,7 +159,7 @@ class ArticleControllerTest {
     void shouldUpdateArticle() throws Exception {
         //given
         Article newArticle = new Article(11L,"Programing Language","Programing", LocalDateTime.now().toLocalDate(), "ProgramingFuture",
-                "Paul Martin", new Timestamp(100, 10, 11, 0, 0, 0, 0));
+                "Paul Martin", Instant.parse("2018-08-22T10:00:00Z"));
 
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
@@ -174,12 +179,14 @@ class ArticleControllerTest {
 
 
         //then
-        List<Article> updateArticle = articleRepository.findArticleById(1L);
-        assertEquals("Programing Language", updateArticle.get(0).getDescribeText());
+        //List<Article> updateArticle = articleRepository.findArticleById(1L);
+        Optional<Article> updateArticle = articleRepository.findById(1L);
+        //assertEquals("Programing Language", updateArticle.get(0).getDescribeText());
+        assertEquals("Programing Language", updateArticle.get());
     }
 
     @Test
-    @DisplayName("DELETE - delete Article -> HTTP 204")
+    @DisplayName("DELETE - delete Article -> HTTP 202")
     void shouldDeleteArticle() throws Exception {
         //given
         String articleIdToDelete = "1";

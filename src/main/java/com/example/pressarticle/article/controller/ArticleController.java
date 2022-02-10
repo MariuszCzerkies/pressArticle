@@ -1,7 +1,12 @@
 package com.example.pressarticle.article.controller;
 
+import com.example.pressarticle.article.controller.dto.ArticleDto;
+import com.example.pressarticle.article.controller.dto.ArticleMapper;
+import com.example.pressarticle.article.controller.dto.ArticleResponse;
 import com.example.pressarticle.article.service.ArticleService;
 import com.example.pressarticle.article.model.Article;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,8 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -22,44 +30,56 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class ArticleController {
 
     private ArticleService articleService;
+    private ArticleMapper articleMapper;
 
-    public ArticleController(ArticleService articleService) {
+    public ArticleController(ArticleService articleService, ArticleMapper articleMapper) {
         this.articleService = articleService;
+        this.articleMapper = articleMapper;
     }
 
     @GetMapping()
-    public ResponseEntity<List<Article>> sortAllArticle(
+    public ResponseEntity<ArticleResponse> sortAllArticle(
             @RequestParam(name = "page", required = false, defaultValue = "0") int pageNumber,
             @RequestParam(name = "size", required = false, defaultValue = "25") int pageSize,
             @RequestParam(name = "sortBy", required = false, defaultValue = "dataPublication") String sortBy
     ) {
-        return ResponseEntity.ok(
-                articleService.sortAllArticleTransfer(pageNumber, pageSize, sortBy)
-        );
+        List<ArticleDto> articleDtoList = articleService.sortAllArticleTransfer(pageNumber, pageSize, sortBy).stream()
+                .map(article -> articleMapper.toDto(article))
+                .collect(Collectors.toList());
+        ArticleResponse articleResponse = new ArticleResponse(articleDtoList);
+
+        return ResponseEntity.ok(articleResponse);
     }
 
     @GetMapping("/{id}")
-    public List<Article> articleId(@PathVariable Long id) {
-        return articleService.articleIdTransfer(id);
+    public ResponseEntity<ArticleDto> articleId(@PathVariable Long id) {
+        ArticleDto articleDto = articleService.articleIdTransfer(id).map(article -> articleMapper.toDto(article)).orElse(null);
+        return ResponseEntity.ok(articleDto);
     }
 
     @GetMapping("/articleText")
-    public List<Article> articleDescription(
+    public ResponseEntity<ArticleResponse> articleDescription(
             @RequestParam String text,
             @RequestParam String titleText
     ) {
-        return articleService.articleDescribeTransfer(text, titleText);
+        List<ArticleDto> list = articleService.articleDescribeTransfer(text, titleText).stream()
+                .map(article -> articleMapper.toDto(article))
+                .collect(Collectors.toList());
+        ArticleResponse articleResponse = new ArticleResponse(list);
+        return ResponseEntity.ok(articleResponse);
     }
 
-    @PostMapping(
-            consumes = APPLICATION_JSON_VALUE,
-            produces = APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<Article> addArticle(@RequestBody Article newArticle) {
+    @PostMapping()
+    public ResponseEntity<ArticleDto> addArticle(@RequestBody Article newArticle, UriComponentsBuilder uriComponentsBuilder) {
         Article article = articleService.addArticleTransfer(newArticle);
-        return ResponseEntity
-                .status(201)
-                .body(article);
+
+        var url = uriComponentsBuilder.path("/articles/{id}").buildAndExpand(article.getId()).toUri();
+        return ResponseEntity.created(url).build();
+
+        //HttpHeaders headers = new HttpHeaders();//nagłówki
+        //headers.setLocation(uriComponentsBuilder.path("/articles/{id}").buildAndExpand(article.getId()).toUri());
+        //return new ResponseEntity<>(headers, HttpStatus.CREATED);
+
     }
 
     @PutMapping(
@@ -67,11 +87,13 @@ public class ArticleController {
             produces = APPLICATION_JSON_VALUE,
             consumes = APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Article> updateArticle(
+    public ResponseEntity<ArticleDto> updateArticle(
             @PathVariable Long id,
             @RequestBody Article articleToUpdate
     ) {
-        return ResponseEntity.ok(articleService.updateArticleTransfer(id, articleToUpdate));
+        Article article = articleService.updateArticleTransfer(id, articleToUpdate);
+        return ResponseEntity.ok(articleMapper.toDto(article));
+        //return ResponseEntity.ok(articleService.updateArticleTransfer(id, articleToUpdate));
     }
 
     @DeleteMapping(

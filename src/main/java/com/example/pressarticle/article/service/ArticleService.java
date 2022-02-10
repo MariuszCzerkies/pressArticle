@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -23,8 +24,8 @@ public class ArticleService {
     }
 
     public List<Article> sortAllArticleTransfer(
-            Integer pageNumber,
-            Integer pageSize,
+            int pageNumber,
+            int pageSize,
             String sortBy
     ) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending());
@@ -36,8 +37,8 @@ public class ArticleService {
         }
     }
 
-    public List<Article> articleIdTransfer(Long id) {
-        return articleRepository.findArticleById(id);
+    public Optional<Article> articleIdTransfer(long id) {
+        return articleRepository.findById(id);
     }
 
     public List<Article> articleDescribeTransfer(String text, String titleText) {
@@ -56,7 +57,7 @@ public class ArticleService {
         return articleRepository.save(toUpdate);
     }
 
-    public void deleteArticleTransfer(Long id) {
+    public void deleteArticleTransfer(long id) {
         articleRepository.deleteById(id);
     }
 }
