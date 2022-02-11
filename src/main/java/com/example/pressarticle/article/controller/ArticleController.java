@@ -70,7 +70,7 @@ public class ArticleController {
     }
 
     @PostMapping()
-    public ResponseEntity<ArticleDto> addArticle(@RequestBody Article newArticle, UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity addArticle(@RequestBody Article newArticle, UriComponentsBuilder uriComponentsBuilder) {
         Article article = articleService.addArticleTransfer(newArticle);
 
         var url = uriComponentsBuilder.path("/articles/{id}").buildAndExpand(article.getId()).toUri();

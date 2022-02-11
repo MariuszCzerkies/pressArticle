@@ -1,5 +1,6 @@
 package com.example.pressarticle.article;
 
+import com.example.pressarticle.article.controller.ArticleController;
 import com.example.pressarticle.article.controller.dto.ArticleDto;
 import com.example.pressarticle.article.controller.dto.ArticleResponse;
 import com.example.pressarticle.article.model.Article;
@@ -26,6 +27,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -50,87 +52,84 @@ class ArticleControllerTest {
     @DisplayName("GET - get Sorted All Articles -> HTTP 200, sorted list articles from base")
     void shouldSortAllArticle() throws Exception {
         //given
-        final var resultActions = mockMvc
+        List<ArticleDto> expectedList = List.of (
+                new ArticleDto(2L, "Machines replace human","Machines", LocalDate.of(2015,10,11), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
+                new ArticleDto(3L, "Robots are a system computer","Robots", LocalDate.of(2014,8,21), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
+                new ArticleDto(4L, "Electrical 230VAC 24VDC","Electrical", LocalDate.of(2012,7,8), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
+                new ArticleDto(6L, "New World is for you","NewWorld", LocalDate.of(2011,9,17), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
+                new ArticleDto(5L, "New World is for you","NewWorld", LocalDate.of(2010,9,17), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
+                new ArticleDto(1L, "New World is for you","NewWorld", LocalDate.of(1022,9,10), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")));
+
+        //when
+        final var responseBodyAsString = mockMvc
                 .perform(MockMvcRequestBuilders.get("/articles"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        final var articleFormDBInJSON = resultActions.andReturn().getResponse().getContentAsString();
-        List<Article> articleFromDBAsJava = objectMapper.readValue(articleFormDBInJSON, new TypeReference<>() {});
+        final var articleFormDBInJSON = responseBodyAsString.andReturn().getResponse().getContentAsString();
+        ArticleResponse responseBody = objectMapper.readValue(articleFormDBInJSON, new TypeReference<>() {});
 
-        List<Article> articleList = List.of (
-                new Article(1L, "New World is for you","NewWorld", LocalDate.of(1022,9,17), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
-                new Article(2L, "Machines replace human","Machines", LocalDate.of(2015,10,11), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
-                new Article(3L, "Robots are a system computer","Robots", LocalDate.of(2014,8,21), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
-                new Article(4L, "Electrical 230VAC 24VDC","Electrical", LocalDate.of(2012,7,8), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
-                new Article(5L, "New World is for you","NewWorld", LocalDate.of(2010,9,17), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
-                new Article(6L, "New World is for you","NewWorld", LocalDate.of(2011,9,17), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")));
-
-        //when
-        articleList = articleList.stream()
-                .sorted(Comparator.comparing(Article::getDataPublication).reversed())
-                .collect(Collectors.toList());
-        List<Long> exampleSortArticleId = new ArrayList<>();
-        for (Article article : articleList) {
-            exampleSortArticleId.add(article.getId());
-        }
-
-        List<Article> expectedSortId = new ArrayList<>();
-        for (int i = 0; i < articleFromDBAsJava.size(); i++) {
-            expectedSortId.add(articleFromDBAsJava.get(i));
-        }
-
-        expectedSortId.stream()
-                .sorted(Comparator.comparing(Article::getDataPublication).reversed())
-                .collect(Collectors.toList());
-
-        List<Long> expectedSortedListId = new ArrayList<>();
-        for (Article article : expectedSortId) {
-            expectedSortedListId.add(article.getId());
-        }
-
-        //then
-        assertEquals(exampleSortArticleId, expectedSortedListId);
+         //then
+        assertEquals(expectedList.size(), responseBody.getArticles().size());
+        IntStream.range(0, expectedList.size()).forEach(i -> assertEquals(expectedList.get(i).getDataPublication(), responseBody.getArticles().get(i).getDataPublication()));
     }
 
     @Test
     @DisplayName("GET - get Article By Id -> HTTP 201")
     void shouldFindArticleById() throws Exception {
         //given
-        final var resultActions = mockMvc
-                .perform(MockMvcRequestBuilders.get("/articles/1"))
+        Long articleId = 1L;
+
+        //when
+        final var response = mockMvc
+                .perform(MockMvcRequestBuilders.get("/articles/" + articleId))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        //when
-        //List<Article> idArticle = articleRepository.findById(1L);
-        ResponseEntity<ArticleDto> idArticle = articleRepository.findById(1L);
+        final var articleFormDBInJSON = response.andReturn().getResponse().getContentAsString();
+        ArticleDto responseBody = objectMapper.readValue(articleFormDBInJSON, new TypeReference<>() {});
 
         //then
-        assertEquals(1, idArticle.get(0).getId());
+        assertEquals(1, responseBody.getId());
+        assertEquals(LocalDate.of(1022,9,10), responseBody.getDataPublication());
+        assertEquals("World", responseBody.getNameMagazine());
+        assertEquals("New World is for you", responseBody.getDescribeText());
+        assertEquals(Instant.parse("2018-08-22T10:00:00Z"), responseBody.getDataSaveDocument());
+        assertEquals("Allan Balkier", responseBody.getNameAuthor());
+        assertEquals("NewWorld", responseBody.getTitleText());
     }
 
     @Test
     @DisplayName("GET - get All Article By Description Or Title -> HTTP 200")
     void shouldGetAllArticlesDescription() throws Exception {
         //given
-        final var resultActions = mockMvc
-                .perform(MockMvcRequestBuilders.get("/articles/articleText?text=New World&titleText=World"))
+        String articleDescribe = "articleText?text=New World&titleText=Electrical";
+
+        List<ArticleDto> expectedList = List.of (
+                new ArticleDto(4L, "Electrical 230VAC 24VDC","Electrical", LocalDate.of(2012,7,8), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
+                new ArticleDto(6L, "New World is for you","NewWorld", LocalDate.of(2011,9,17), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
+                new ArticleDto(5L, "New World is for you","NewWorld", LocalDate.of(2010,9,17), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),
+                new ArticleDto(1L, "New World is for you","NewWorld", LocalDate.of(1022,9,10), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z"))
+        );
+
+        //when
+        final var response = mockMvc
+                .perform(MockMvcRequestBuilders.get("/articles/" + articleDescribe))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        //when
-        List<Article> describeArticle = articleRepository.findArticleByDescribe("New World", "World");
+        final var articleFormDBInJSON = response.andReturn().getResponse().getContentAsString();
+        ArticleResponse responseBody = objectMapper.readValue(articleFormDBInJSON, new TypeReference<>() {});
 
         //then
-        assertEquals(3, describeArticle.size());
+        assertEquals(expectedList.size(), responseBody.getArticles().size());
     }
 
     @Test
     @DisplayName("POST - add All Article By Description Or Title -> HTTP 201")
     void shouldAddArticle() throws Exception {
         //give
-        Article newArticle = new Article(11L,"Programing Language","Programing", LocalDateTime.now().toLocalDate(), "ProgramingFuture",
+        ArticleDto newArticle = new ArticleDto(11L,"Programing Language","Programing", LocalDateTime.now().toLocalDate(), "ProgramingFuture",
                 "Paul Martin", Instant.parse("2018-08-22T10:00:00Z"));
 
         objectMapper.registerModule(new JavaTimeModule());
@@ -138,7 +137,7 @@ class ArticleControllerTest {
         String requestJson= objectMapper.writeValueAsString(newArticle);
 
         //when
-        final var resultActions = mockMvc
+        final var response = mockMvc
                 .perform(MockMvcRequestBuilders
                         .post("/articles")
                         .contentType("application/json")
@@ -146,12 +145,12 @@ class ArticleControllerTest {
                         .content(requestJson)
                 )
                 .andDo(print())
-                .andExpect(status().is2xxSuccessful());
+                .andExpect(status().is(201));
 
+        final var locationHeaderValue = response.andReturn().getResponse().getHeader("Location");
 
         //then
-        List<Article> addArticle = articleRepository.findAll();
-        assertEquals(7, addArticle.size());
+        assertEquals("http://localhost/articles/7", locationHeaderValue);
     }
 
     @Test
