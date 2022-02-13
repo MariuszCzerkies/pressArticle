@@ -1,7 +1,7 @@
 package com.example.pressarticle.article.domain;
 
 import com.example.pressarticle.article.domain.model.Article;
-import com.example.pressarticle.article.repository.JpaArticleRepository;
+import com.example.pressarticle.article.external.repository.JpaArticleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

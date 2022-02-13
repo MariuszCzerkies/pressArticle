@@ -3,7 +3,7 @@ package com.example.pressarticle.article;
 import com.example.pressarticle.article.controller.dto.ArticleDto;
 import com.example.pressarticle.article.controller.dto.ArticleResponse;
 import com.example.pressarticle.article.domain.model.Article;
-import com.example.pressarticle.article.repository.JpaArticleRepository;
+import com.example.pressarticle.article.external.repository.JpaArticleRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

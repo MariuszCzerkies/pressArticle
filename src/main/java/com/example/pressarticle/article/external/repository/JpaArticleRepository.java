@@ -1,4 +1,4 @@
-package com.example.pressarticle.article.repository;
+package com.example.pressarticle.article.external.repository;
 
 import com.example.pressarticle.article.domain.model.Article;
 import org.springframework.data.jpa.repository.JpaRepository;
