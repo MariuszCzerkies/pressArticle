@@ -1,4 +1,4 @@
-package com.example.pressarticle.article.service;
+package com.example.pressarticle.article.domain;
 
 import com.example.pressarticle.article.model.Article;
 import com.example.pressarticle.article.repository.ArticleRepository;

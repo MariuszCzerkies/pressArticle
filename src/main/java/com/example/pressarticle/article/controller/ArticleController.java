@@ -3,10 +3,8 @@ package com.example.pressarticle.article.controller;
 import com.example.pressarticle.article.controller.dto.ArticleDto;
 import com.example.pressarticle.article.controller.dto.ArticleMapper;
 import com.example.pressarticle.article.controller.dto.ArticleResponse;
-import com.example.pressarticle.article.service.ArticleService;
+import com.example.pressarticle.article.domain.ArticleService;
 import com.example.pressarticle.article.model.Article;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 

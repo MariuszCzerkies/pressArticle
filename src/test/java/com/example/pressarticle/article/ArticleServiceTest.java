@@ -2,7 +2,7 @@ package com.example.pressarticle.article;
 
 import com.example.pressarticle.article.model.Article;
 import com.example.pressarticle.article.repository.ArticleRepository;
-import com.example.pressarticle.article.service.ArticleService;
+import com.example.pressarticle.article.domain.ArticleService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

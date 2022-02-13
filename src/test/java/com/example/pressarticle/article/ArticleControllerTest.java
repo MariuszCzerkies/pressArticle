@@ -1,6 +1,5 @@
 package com.example.pressarticle.article;
 
-import com.example.pressarticle.article.controller.ArticleController;
 import com.example.pressarticle.article.controller.dto.ArticleDto;
 import com.example.pressarticle.article.controller.dto.ArticleResponse;
 import com.example.pressarticle.article.model.Article;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -157,18 +151,19 @@ class ArticleControllerTest {
     @DisplayName("PUT - update Article -> HTTP 200")
     void shouldUpdateArticle() throws Exception {
         //given
-        Article newArticle = new Article(11L,"Programing Language","Programing", LocalDateTime.now().toLocalDate(), "ProgramingFuture",
+        Long articleId = 1L;
+        ArticleDto newArticle = new ArticleDto(1L,"Programing Language","Programing", LocalDateTime.now().toLocalDate(), "ProgramingFuture",
                 "Paul Martin", Instant.parse("2018-08-22T10:00:00Z"));
 
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+//        objectMapper.registerModule(new JavaTimeModule());
+//        objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
         String requestJson = objectMapper.writeValueAsString(newArticle);
 
         //when
-        final var resultActions = mockMvc
+        final var response = mockMvc
                 .perform(
                         MockMvcRequestBuilders
-                                .put("/articles/1")
+                                .put("/articles/" + articleId)
                                 .contentType("application/json")
                                 .accept("application/json")
                                 .content(requestJson)
@@ -176,12 +171,11 @@ class ArticleControllerTest {
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
 
+        final var articleFormDBInJSON = response.andReturn().getResponse().getContentAsString();
+        ArticleDto responseBody = objectMapper.readValue(articleFormDBInJSON, new TypeReference<>() {});
 
         //then
-        //List<Article> updateArticle = articleRepository.findArticleById(1L);
-        Optional<Article> updateArticle = articleRepository.findById(1L);
-        //assertEquals("Programing Language", updateArticle.get(0).getDescribeText());
-        assertEquals("Programing Language", updateArticle.get());
+        assertEquals(newArticle.getDataPublication(), responseBody.getDataPublication());
     }
 
     @Test
