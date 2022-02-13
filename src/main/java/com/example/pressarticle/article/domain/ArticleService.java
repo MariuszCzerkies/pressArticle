@@ -1,7 +1,7 @@
 package com.example.pressarticle.article.domain;
 
-import com.example.pressarticle.article.model.Article;
-import com.example.pressarticle.article.repository.ArticleRepository;
+import com.example.pressarticle.article.domain.model.Article;
+import com.example.pressarticle.article.repository.JpaArticleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,10 +17,10 @@ import java.util.Optional;
 @Slf4j
 public class ArticleService {
 
-    private ArticleRepository articleRepository;
+    private JpaArticleRepository jpaArticleRepository;
 
-    public ArticleService(ArticleRepository articleRepository) {
-        this.articleRepository = articleRepository;
+    public ArticleService(JpaArticleRepository jpaArticleRepository) {
+        this.jpaArticleRepository = jpaArticleRepository;
     }
 
     public List<Article> sortAllArticleTransfer(
@@ -29,7 +29,7 @@ public class ArticleService {
             String sortBy
     ) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending());
-        Page<Article> quotations = articleRepository.findAll(pageable);
+        Page<Article> quotations = jpaArticleRepository.findAll(pageable);
         if (quotations.hasContent()) {
             return quotations.getContent();
         } else {
@@ -38,15 +38,15 @@ public class ArticleService {
     }
 
     public Optional<Article> articleIdTransfer(long id) {
-        return articleRepository.findById(id);
+        return jpaArticleRepository.findById(id);
     }
 
     public List<Article> articleDescribeTransfer(String text, String titleText) {
-        return articleRepository.findArticleByDescribe(text, titleText);
+        return jpaArticleRepository.findArticleByDescribe(text, titleText);
     }
 
     public Article addArticleTransfer(Article article) {
-        return articleRepository.save(article);
+        return jpaArticleRepository.save(article);
     }
 
     public Article updateArticleTransfer(
@@ -54,10 +54,10 @@ public class ArticleService {
             Article toUpdate
     ) {
         toUpdate.setId(id);
-        return articleRepository.save(toUpdate);
+        return jpaArticleRepository.save(toUpdate);
     }
 
     public void deleteArticleTransfer(long id) {
-        articleRepository.deleteById(id);
+        jpaArticleRepository.deleteById(id);
     }
 }

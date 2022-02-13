@@ -2,8 +2,8 @@ package com.example.pressarticle.article;
 
 import com.example.pressarticle.article.controller.dto.ArticleDto;
 import com.example.pressarticle.article.controller.dto.ArticleResponse;
-import com.example.pressarticle.article.model.Article;
-import com.example.pressarticle.article.repository.ArticleRepository;
+import com.example.pressarticle.article.domain.model.Article;
+import com.example.pressarticle.article.repository.JpaArticleRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ArticleControllerTest {
 
     @Autowired
-    private ArticleRepository articleRepository;
+    private JpaArticleRepository jpaArticleRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -194,7 +194,7 @@ class ArticleControllerTest {
                 .andExpect(status().is(202));
 
         //then
-        List<Article> existArticle = articleRepository.findAll();
+        List<Article> existArticle = jpaArticleRepository.findAll();
         assertEquals(5, existArticle.size());
     }
 }

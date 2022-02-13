@@ -1,6 +1,6 @@
 package com.example.pressarticle.article.controller.dto;
 
-import com.example.pressarticle.article.model.Article;
+import com.example.pressarticle.article.domain.model.Article;
 import org.mapstruct.Mapper;
 
 @Mapper

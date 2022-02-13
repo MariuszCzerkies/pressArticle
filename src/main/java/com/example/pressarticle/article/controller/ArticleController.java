@@ -4,7 +4,7 @@ import com.example.pressarticle.article.controller.dto.ArticleDto;
 import com.example.pressarticle.article.controller.dto.ArticleMapper;
 import com.example.pressarticle.article.controller.dto.ArticleResponse;
 import com.example.pressarticle.article.domain.ArticleService;
-import com.example.pressarticle.article.model.Article;
+import com.example.pressarticle.article.domain.model.Article;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

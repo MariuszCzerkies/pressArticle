@@ -1,4 +1,4 @@
-package com.example.pressarticle.article.model;
+package com.example.pressarticle.article.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
