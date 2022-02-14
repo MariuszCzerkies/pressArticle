@@ -1,8 +1,6 @@
 package com.example.pressarticle.article.config;
 
 import com.example.pressarticle.article.controller.dto.ArticleMapper;
-import com.example.pressarticle.article.domain.repository.ArticleRepository;
-import com.example.pressarticle.article.external.ArticleStorageAdapter;
 import org.mapstruct.factory.Mappers;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
