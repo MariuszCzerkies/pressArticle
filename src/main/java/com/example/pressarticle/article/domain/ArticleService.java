@@ -1,7 +1,7 @@
 package com.example.pressarticle.article.domain;
 
 import com.example.pressarticle.article.domain.model.Article;
-import com.example.pressarticle.article.external.repository.JpaArticleRepository;
+import com.example.pressarticle.article.domain.repository.ArticleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,10 +17,10 @@ import java.util.Optional;
 @Slf4j
 public class ArticleService {
 
-    private JpaArticleRepository jpaArticleRepository;
+    public ArticleRepository articleRepository;
 
-    public ArticleService(JpaArticleRepository jpaArticleRepository) {
-        this.jpaArticleRepository = jpaArticleRepository;
+    public ArticleService(ArticleRepository articleRepository) {
+        this.articleRepository = articleRepository;
     }
 
     public List<Article> sortAllArticleTransfer(
@@ -29,7 +29,7 @@ public class ArticleService {
             String sortBy
     ) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending());
-        Page<Article> quotations = jpaArticleRepository.findAll(pageable);
+        Page<Article> quotations = articleRepository.findAll(pageable);
         if (quotations.hasContent()) {
             return quotations.getContent();
         } else {
@@ -38,15 +38,15 @@ public class ArticleService {
     }
 
     public Optional<Article> articleIdTransfer(long id) {
-        return jpaArticleRepository.findById(id);
+        return articleRepository.findById(id);
     }
 
     public List<Article> articleDescribeTransfer(String text, String titleText) {
-        return jpaArticleRepository.findArticleByDescribe(text, titleText);
+        return articleRepository.findArticleByDescribe(text, titleText);
     }
 
     public Article addArticleTransfer(Article article) {
-        return jpaArticleRepository.save(article);
+        return articleRepository.save(article);
     }
 
     public Article updateArticleTransfer(
@@ -54,10 +54,10 @@ public class ArticleService {
             Article toUpdate
     ) {
         toUpdate.setId(id);
-        return jpaArticleRepository.save(toUpdate);
+        return articleRepository.save(toUpdate);
     }
 
     public void deleteArticleTransfer(long id) {
-        jpaArticleRepository.deleteById(id);
+        articleRepository.deleteById(id);
     }
 }

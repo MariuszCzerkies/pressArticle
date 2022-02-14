@@ -1,6 +1,7 @@
 package com.example.pressarticle.article;
 
 import com.example.pressarticle.article.domain.model.Article;
+import com.example.pressarticle.article.domain.repository.ArticleRepository;
 import com.example.pressarticle.article.external.repository.JpaArticleRepository;
 import com.example.pressarticle.article.domain.ArticleService;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ArticleServiceTest {
 
     @Mock
-    JpaArticleRepository jpaArticleRepository;
+    ArticleRepository articleRepository;
 
     @InjectMocks
     ArticleService articleService;
@@ -45,7 +46,7 @@ class ArticleServiceTest {
 
         Mockito
                 .when(
-                        jpaArticleRepository.findAll(Mockito.any(Pageable.class))
+                        articleRepository.findAll(Mockito.any(Pageable.class))
                 )
                 .thenReturn(new PageImpl<>(list));
 
@@ -85,7 +86,7 @@ class ArticleServiceTest {
 
         Mockito
                 .when(
-                        jpaArticleRepository.findArticleByDescribe(
+                        articleRepository.findArticleByDescribe(
                                 Mockito.anyString(), Mockito.anyString()
                         )
                 )
@@ -105,7 +106,7 @@ class ArticleServiceTest {
         Article article = new Article(1L, "NewWorld", "NewTitleWorld",LocalDate.of(2022,9,17),
                 "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z"));
 
-        Mockito.when(jpaArticleRepository.save(article)).thenReturn(article);
+        Mockito.when(articleRepository.save(article)).thenReturn(article);
 
         //when
         Article result = articleService.addArticleTransfer(article);
@@ -121,7 +122,7 @@ class ArticleServiceTest {
         Article article = new Article(1L, "updateNewWorld","updateText", LocalDate.of(2022,9,17),
                 "updateWorld", "Update Allan Balkier", Instant.parse("2018-08-22T10:00:00Z"));
 
-        Mockito.when(jpaArticleRepository.save(article)).thenReturn(article);
+        Mockito.when(articleRepository.save(article)).thenReturn(article);
 
         //when
         Article result = articleService.addArticleTransfer(article);
@@ -141,6 +142,6 @@ class ArticleServiceTest {
         articleService.deleteArticleTransfer(SOME_ID);
 
         //then
-        Mockito.verify(jpaArticleRepository).deleteById(SOME_ID);
+        Mockito.verify(articleRepository).deleteById(SOME_ID);
     }
 }
