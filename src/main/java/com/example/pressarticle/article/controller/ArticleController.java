@@ -50,8 +50,11 @@ public class ArticleController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ArticleDto> articleId(@PathVariable Long id) {
-        ArticleDto articleDto = articleService.articleIdTransfer(id).map(article -> articleMapper.toDto(article)).orElse(null);
-        return ResponseEntity.ok(articleDto);
+        //ArticleDto articleDto = articleService.articleIdTransfer(id).map(article -> articleMapper.toDto(article)).orElse(null);
+        //ArticleDto articleDto = articleService.articleIdTransfer(articleMapper.toDto(id));
+        Article articleDto = articleService.articleIdTransfer(id);
+        //return ResponseEntity.ok(articleDto);
+        return ResponseEntity.ok(articleMapper.toDto(articleDto));
     }
 
     @GetMapping("/articleText")

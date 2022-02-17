@@ -24,9 +24,12 @@ public class ArticleStorageAdapter implements ArticleRepository {
     }
 
     @Override
-    public Optional<Article> findById(Long id) {
-        return Optional.empty();
+    public Article findById(Long id) {
+        return null;
     }
+//    public Optional<Article> findById(Long id) {
+//        return Optional.empty();
+//    }
 
     @Override
     public List<Article> findArticleByDescribe(String text, String titleText) {

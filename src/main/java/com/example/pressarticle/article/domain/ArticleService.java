@@ -37,7 +37,7 @@ public class ArticleService {
         }
     }
 
-    public Optional<Article> articleIdTransfer(long id) {
+    public Article articleIdTransfer(Long id) {
         return articleRepository.findById(id);
     }
 

@@ -11,7 +11,8 @@ public interface ArticleRepository {
 
     Page<Article> findAll(Pageable pageable);
 
-    Optional<Article> findById(Long id);
+    Article findById(Long id);
+    //Optional<Article> findById(Long id);
 
     List<Article> findArticleByDescribe(String text, String titleText);
 

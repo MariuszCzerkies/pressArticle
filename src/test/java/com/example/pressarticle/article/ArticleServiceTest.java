@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -62,18 +63,23 @@ class ArticleServiceTest {
     @DisplayName("Should return Articles for id")
     void articleIdTransfer() {
         //given
-        List<Article> article = new ArrayList<>();
-        article.add(new Article(1L, "NewWorld", "NewTitle",LocalDate.of(2022,9,17),
-                "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")));
+       Article article =
+        new Article(1L, "NewWorld", "NewTitle",LocalDate.of(2022,9,17),
+                "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z"));
+
+//        List<Article> article = new ArrayList<>();
+//        article.add(new Article(1L, "NewWorld", "NewTitle",LocalDate.of(2022,9,17),
+//                "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")));
 
         //Mockito.when(articleRepository.findArticleById(Mockito.anyLong())).thenReturn(article);
+        Mockito.when(articleRepository.findById(Mockito.anyLong())).thenReturn(article);
 
         //when
-        //List<Article> result= articleService.articleIdTransfer(1L);
+       Article result= articleService.articleIdTransfer(1L);
 
         //then
        // assertEquals(article.size(), result.size());
-       // assertEquals(article.get(0).getId(), result.get(0).getId());
+         assertEquals(article.getId(), result.getId());
     }
 
     @Test
