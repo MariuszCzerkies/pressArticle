@@ -61,11 +61,11 @@ class ArticleControllerTest {
                 .andExpect(status().isOk());
 
         final var articleFormDBInJSON = responseBodyAsString.andReturn().getResponse().getContentAsString();
-        ArticleResponse responseBody = objectMapper.readValue(articleFormDBInJSON, new TypeReference<>() {});
+        List<ArticleDto> responseBody = objectMapper.readValue(articleFormDBInJSON, new TypeReference<>() {});
 
          //then
-        assertEquals(expectedList.size(), responseBody.getArticles().size());
-        IntStream.range(0, expectedList.size()).forEach(i -> assertEquals(expectedList.get(i).getDataPublication(), responseBody.getArticles().get(i).getDataPublication()));
+        assertEquals(expectedList.size(), responseBody.size());
+        IntStream.range(0, expectedList.size()).forEach(i -> assertEquals(expectedList.get(i).getDataPublication(), responseBody.get(i).getDataPublication()));
     }
 
     @Test
@@ -97,7 +97,7 @@ class ArticleControllerTest {
     @DisplayName("GET - get All Article By Description Or Title -> HTTP 200")
     void shouldGetAllArticlesDescription() throws Exception {
         //given
-        String articleDescribe = "articleText?text=New World&titleText=Electrical";
+        String articleDescribe = "search?description=New World&title=Electrical";
 
         List<ArticleDto> expectedList = List.of (
                 new ArticleDto(4L, "Electrical 230VAC 24VDC","Electrical", LocalDate.of(2012,7,8), "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")),

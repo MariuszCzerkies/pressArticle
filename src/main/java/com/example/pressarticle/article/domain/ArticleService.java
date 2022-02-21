@@ -11,12 +11,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
 public class ArticleService {
 
-    public ArticleRepository articleRepository;
+    private final ArticleRepository articleRepository;
 
     public ArticleService(ArticleRepository articleRepository) {
         this.articleRepository = articleRepository;
@@ -37,11 +38,11 @@ public class ArticleService {
     }
 
     public Article findArticleById(Long id) {
-        return articleRepository.findById(id);
+        return articleRepository.findById(id).orElse(null);
     }
 
     public List<Article> findArticlesByDescriptionOrTitle(String description, String title) {
-        return articleRepository.findArticleByDescribe(description, title);
+        return articleRepository.findArticleByDescriptionOrTitle(description, title);
     }
 
     public Article addArticleTransfer(Article article) {

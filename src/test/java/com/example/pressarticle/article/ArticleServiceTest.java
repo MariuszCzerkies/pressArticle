@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -70,7 +71,7 @@ class ArticleServiceTest {
 //                "World", "Allan Balkier", Instant.parse("2018-08-22T10:00:00Z")));
 
         //Mockito.when(articleRepository.findArticleById(Mockito.anyLong())).thenReturn(article);
-        Mockito.when(articleRepository.findById(Mockito.anyLong())).thenReturn(article);
+        Mockito.when(articleRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(article));
 
         //when
        Article result= articleService.findArticleById(1L);
@@ -90,7 +91,7 @@ class ArticleServiceTest {
 
         Mockito
                 .when(
-                        articleRepository.findArticleByDescribe(
+                        articleRepository.findArticleByDescriptionOrTitle(
                                 Mockito.anyString(), Mockito.anyString()
                         )
                 )

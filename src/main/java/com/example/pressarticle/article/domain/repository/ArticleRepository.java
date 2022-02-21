@@ -8,15 +8,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ArticleRepository {
-
     Page<Article> findAll(Pageable pageable);
 
-    Article findById(Long id);
-    //Optional<Article> findById(Long id);
-
-    //List<Article> findArticleByDescribe(String text, String titleText);
+    Optional<Article> findById(Long id);
 
     Article save(Article entity);
 
     void deleteById(Long id);
+
+    List<Article> findArticleByDescriptionOrTitle(String description, String title);
 }
