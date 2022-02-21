@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -37,12 +36,12 @@ public class ArticleService {
         }
     }
 
-    public Article articleIdTransfer(Long id) {
+    public Article findArticleById(Long id) {
         return articleRepository.findById(id);
     }
 
-    public List<Article> articleDescribeTransfer(String text, String titleText) {
-        return articleRepository.findArticleByDescribe(text, titleText);
+    public List<Article> findArticlesByDescriptionOrTitle(String description, String title) {
+        return articleRepository.findArticleByDescribe(description, title);
     }
 
     public Article addArticleTransfer(Article article) {

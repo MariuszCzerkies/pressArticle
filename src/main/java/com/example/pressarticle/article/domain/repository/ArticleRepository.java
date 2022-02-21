@@ -14,7 +14,7 @@ public interface ArticleRepository {
     Article findById(Long id);
     //Optional<Article> findById(Long id);
 
-    List<Article> findArticleByDescribe(String text, String titleText);
+    //List<Article> findArticleByDescribe(String text, String titleText);
 
     Article save(Article entity);
 

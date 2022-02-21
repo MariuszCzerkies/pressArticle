@@ -35,7 +35,7 @@ public class ArticleController {
     }
 
     @GetMapping()
-    public ResponseEntity<ArticleResponse> sortAllArticle(
+    public ResponseEntity<List<ArticleDto>> sortAllArticle(
             @RequestParam(name = "page", required = false, defaultValue = "0") int pageNumber,
             @RequestParam(name = "size", required = false, defaultValue = "25") int pageSize,
             @RequestParam(name = "sortBy", required = false, defaultValue = "dataPublication") String sortBy
@@ -43,26 +43,21 @@ public class ArticleController {
         List<ArticleDto> articleDtoList = articleService.sortAllArticleTransfer(pageNumber, pageSize, sortBy).stream()
                 .map(article -> articleMapper.toDto(article))
                 .collect(Collectors.toList());
-        ArticleResponse articleResponse = new ArticleResponse(articleDtoList);
-
-        return ResponseEntity.ok(articleResponse);
+        return ResponseEntity.ok(articleDtoList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ArticleDto> articleId(@PathVariable Long id) {
-        //ArticleDto articleDto = articleService.articleIdTransfer(id).map(article -> articleMapper.toDto(article)).orElse(null);
-        //ArticleDto articleDto = articleService.articleIdTransfer(articleMapper.toDto(id));
-        Article articleDto = articleService.articleIdTransfer(id);
-        //return ResponseEntity.ok(articleDto);
-        return ResponseEntity.ok(articleMapper.toDto(articleDto));
+    public ResponseEntity<ArticleDto> getArticleById(@PathVariable Long id) {
+        Article article = articleService.findArticleById(id);
+        return ResponseEntity.ok(articleMapper.toDto(article));
     }
 
-    @GetMapping("/articleText")
-    public ResponseEntity<ArticleResponse> articleDescription(
-            @RequestParam String text,
-            @RequestParam String titleText
+    @GetMapping("/search")
+    public ResponseEntity<ArticleResponse> searchForArticles(
+            @RequestParam String description,
+            @RequestParam String title
     ) {
-        List<ArticleDto> list = articleService.articleDescribeTransfer(text, titleText).stream()
+        List<ArticleDto> list = articleService.findArticlesByDescriptionOrTitle(description, title).stream()
                 .map(article -> articleMapper.toDto(article))
                 .collect(Collectors.toList());
         ArticleResponse articleResponse = new ArticleResponse(list);

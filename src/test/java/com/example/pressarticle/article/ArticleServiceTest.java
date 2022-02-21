@@ -2,7 +2,6 @@ package com.example.pressarticle.article;
 
 import com.example.pressarticle.article.domain.model.Article;
 import com.example.pressarticle.article.domain.repository.ArticleRepository;
-import com.example.pressarticle.article.external.repository.JpaArticleRepository;
 import com.example.pressarticle.article.domain.ArticleService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -75,7 +73,7 @@ class ArticleServiceTest {
         Mockito.when(articleRepository.findById(Mockito.anyLong())).thenReturn(article);
 
         //when
-       Article result= articleService.articleIdTransfer(1L);
+       Article result= articleService.findArticleById(1L);
 
         //then
        // assertEquals(article.size(), result.size());
@@ -99,7 +97,7 @@ class ArticleServiceTest {
                 .thenReturn(article);
 
         //when
-        List<Article> result = articleService.articleDescribeTransfer("NewWorld", "World");
+        List<Article> result = articleService.findArticlesByDescriptionOrTitle("NewWorld", "World");
 
         //then
         assertEquals(article.size(), result.size());
