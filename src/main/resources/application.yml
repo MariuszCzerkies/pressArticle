@@ -1,0 +1,9 @@
+spring:
+  h2:
+    console:
+      enabled: true
+  datasource:
+    username: root
+    password: root
+  jpa:
+    defer-datasource-initialization: true

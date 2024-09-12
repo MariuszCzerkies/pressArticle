@@ -1,0 +1,39 @@
+### Get Article By Text Or TitleText
+GET http://localhost:8080/articles/articleText?text=New World&titleText=World
+Content-Type: application/json
+Accept: application/json
+
+
+### Get Article
+GET http://localhost:8080/articles
+Content-Type: application/json
+Accept: application/json
+
+
+### Add Article
+POST http://localhost:8080/articles
+Content-Type: application/json
+Accept: application/json
+
+{
+  "describeText": "NewDescription",
+  "titleText": "New title text",
+  "dataPublication": "2022-09-10",
+  "nameMagazine": "NewMagazine",
+  "nameAuthor": "New Author",
+  "dataSaveDocument": "1998-10-10T22:00:00.000+00:00"
+}
+
+### Update Article
+PUT http://localhost:8080/articles/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "describeText": "UpdateDescription",
+    "titleText": "New update title text",
+    "dataPublication": "2022-09-10",
+    "nameMagazine": "NewUpdateMagazine",
+    "nameAuthor": "New Author",
+    "dataSaveDocument": "1988-10-10T22:00:00.000+00:00"
+}
